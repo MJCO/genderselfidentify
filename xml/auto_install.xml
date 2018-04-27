@@ -3,23 +3,27 @@
 <CustomData>
   <CustomGroups>
     <CustomGroup>
-      <name>Sexualityselfidentify</name>
-      <title>User-Entered Sexuality</title>
-      <extends>Individual</extends>
+      <name>SexualitySelfIdentify</name>
+      <title>SexualitySelfIdentify</title>
+      <extends>Contact</extends>
       <style>Inline</style>
       <collapse_display>1</collapse_display>
+      <help_pre></help_pre>
+      <help_post></help_post>
       <weight>99</weight>
       <is_active>1</is_active>
-      <table_name>civicrm_value_sexualityselfidentify</table_name>
+      <table_name>civicrm_value_sexualityself_4</table_name>
       <is_multiple>0</is_multiple>
       <collapse_adv_display>1</collapse_adv_display>
-      <is_reserved>1</is_reserved>
+      <created_date>2018-04-27 14:41:13</created_date>
+      <is_reserved>0</is_reserved>
+      <is_public>0</is_public>
     </CustomGroup>
   </CustomGroups>
   <CustomFields>
     <CustomField>
-      <name>Sexuality_Other</name>
-      <label>Sexuality - Other</label>
+      <name>Sexuality</name>
+      <label>Sexuality</label>
       <data_type>String</data_type>
       <html_type>Text</html_type>
       <is_required>0</is_required>
@@ -27,11 +31,13 @@
       <is_search_range>0</is_search_range>
       <weight>1</weight>
       <is_active>1</is_active>
-      <is_view>1</is_view>
+      <is_view>0</is_view>
       <text_length>255</text_length>
-      <column_name>sexuality_other</column_name>
+      <note_columns>60</note_columns>
+      <note_rows>4</note_rows>
+      <column_name>sexuality_12</column_name>
       <in_selector>0</in_selector>
-      <custom_group_name>Sexualityselfidentify</custom_group_name>
+      <custom_group_name>SexualitySelfIdentify</custom_group_name>
     </CustomField>
   </CustomFields>
 </CustomData>
