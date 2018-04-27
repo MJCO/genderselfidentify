@@ -21,7 +21,7 @@
   </CustomGroups>
   <CustomFields>
     <CustomField>
-      <name>Sexuality</name>
+      <name>sexuality_other</name>
       <label>Sexuality</label>
       <data_type>String</data_type>
       <html_type>Text</html_type>
