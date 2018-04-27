@@ -1,6 +1,6 @@
 <?php
 
-class CRM_Sexualityselfidentify_BAO_Sexuality {
+class CRM_sexualityselfidentify_BAO_Sexuality {
 
   /**
    * @return int
@@ -73,7 +73,7 @@ class CRM_Sexualityselfidentify_BAO_Sexuality {
           return $key;
         }
       }
-      return CRM_Sexualityselfidentify_BAO_Sexuality::otherOption();
+      return CRM_sexualityselfidentify_BAO_Sexuality::otherOption();
     }
     return '';
   }
