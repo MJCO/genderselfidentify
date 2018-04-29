@@ -28,7 +28,6 @@ function sexualityselfidentify_civicrm_xmlMenu(&$files) {
  */
 function sexualityselfidentify_civicrm_install() {
   _sexualityselfidentify_civix_civicrm_install();
-  _sexualityselfidentify_add_other_option();
 }
 
 /**
