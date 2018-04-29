@@ -19,7 +19,7 @@
   <CustomFields>
     <CustomField>
       <name>sexuality_other</name>
-      <label>Sexuality</label>
+      <label>Sexuality - Self Identification</label>
       <data_type>String</data_type>
       <html_type>Text</html_type>
       <is_required>0</is_required>
