@@ -6,13 +6,13 @@ class CRM_sexualityselfidentify_BAO_Sexuality {
    * @return int
    * @throws \CiviCRM_API3_Exception
    */
-  public static function getCustomFieldId() {
+  public static function getCustomFieldId($group, $name) {
     static $id;
     if (!$id) {
       $result = civicrm_api3('CustomField', 'getsingle', array(
         'return' => 'id',
-        'custom_group_id' => 'Sexualityselfidentify',
-        'name' => 'Sexuality',
+        'custom_group_id' => $group,
+        'name' => $name,
       ));
       $id = $result['id'];
     }
