@@ -5,18 +5,15 @@
     <CustomGroup>
       <name>SexualitySelfIdentify</name>
       <title>Sexuality - Self Identification</title>
-      <extends>Contact</extends>
+      <extends>Individual</extends>
       <style>Inline</style>
       <collapse_display>1</collapse_display>
-      <help_pre></help_pre>
-      <help_post></help_post>
       <weight>99</weight>
       <is_active>1</is_active>
-      <table_name>civicrm_sexualityselfidentify</table_name>
+      <table_name>civicrm_value_sexualityselfidentify</table_name>
       <is_multiple>0</is_multiple>
       <collapse_adv_display>1</collapse_adv_display>
       <is_reserved>1</is_reserved>
-      <is_public>0</is_public>
     </CustomGroup>
   </CustomGroups>
   <CustomFields>
