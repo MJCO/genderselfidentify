@@ -205,10 +205,10 @@ function sexualityselfidentify_civicrm_pre($op, $objectName, $id, &$params) {
 
       // Can't just set `$params['custom_x'] = $input` because that would be too easy
       // For contact create
-      $params['custom_' . CRM_sexualityselfidentify_BAO_Sexuality::getCustomFieldId() . '_-1'] = $input;
+      $params['custom_' . CRM_sexualityselfidentify_BAO_Sexuality::getCustomFieldId('SexualitySelfIdentify','Sexuality') . '_-1'] = $input;
       // For contact inline-edit
       $params += array('custom' => array());
-      CRM_Core_BAO_CustomField::formatCustomField(CRM_sexualityselfidentify_BAO_Sexuality::getCustomFieldId(), $params['custom'],
+      CRM_Core_BAO_CustomField::formatCustomField(CRM_sexualityselfidentify_BAO_Sexuality::getCustomFieldId('SexualitySelfIdentify','Sexuality'), $params['custom'],
         $input, 'Individual', NULL, $id, FALSE, FALSE, TRUE
       );
     }
