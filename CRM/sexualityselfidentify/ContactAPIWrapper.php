@@ -68,12 +68,13 @@ class CRM_sexualityselfidentify_ContactAPIWrapper implements API_Wrapper {
    * @param array $contact
    */
   private function fixContactSexuality(&$contact) {
+    $SexualityField = 'custom_' . CRM_sexualityselfidentify_BAO_Sexuality::getCustomFieldId('Demographics', 'Sexuality');
     $customSexualityField = 'custom_' . CRM_sexualityselfidentify_BAO_Sexuality::getCustomFieldId('SexualitySelfIdentify','Sexuality');
     $other = CRM_sexualityselfidentify_BAO_Sexuality::otherOption();
-    if (array_key_exists('sexuality_id', $contact) && array_key_exists($customSexualityField, $contact)) {
-      $contact['sexuality'] = !empty($contact['sexuality']) && ($contact['sexuality_id'] != $other || !strlen($contact[$customSexualityField])) ? $contact['sexuality'] : $contact[$customSexualityField];
+    if (array_key_exists($SexualityField, $contact) && array_key_exists($customSexualityField, $contact)) {
+      $contact['sexuality'] = !empty($contact['sexuality']) && ($contact[$SexualityField] != $other || !strlen($contact[$customSexualityField])) ? $contact[$SexualityField] : $contact[$customSexualityField];
     }
-    elseif (!empty($contact['sexuality_id']) && $contact['sexuality_id'] == $other) {
+    elseif (!empty($contact[$SexualityField]) && $contact[$SexualityField] == $other) {
       $contact['sexuality'] = CRM_sexualityselfidentify_BAO_Sexuality::get($contact['id']);
     }
   }

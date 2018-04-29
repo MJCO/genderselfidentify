@@ -47,8 +47,9 @@ class CRM_sexualityselfidentify_BAO_Sexuality {
     if (!$contactId) {
       return '';
     }
+    $sexualityfieldid = CRM_sexualityselfidentify_BAO_Sexuality::getCustomFieldId('Demographics', 'Sexuality');
     $contact = civicrm_api3('Contact', 'getsingle', array(
-      'return' => array('sexuality_id'),
+      'return' => array('custom_' . $sexualityfieldid),
       'id' => $contactId,
     ));
     // Our api wrapper will have done all the work, just return it
@@ -63,7 +64,8 @@ class CRM_sexualityselfidentify_BAO_Sexuality {
   public static function match($input) {
     $input = trim($input);
     if ($input) {
-      $sexualityOptions = civicrm_api3('contact', 'getoptions', array('field' => 'sexuality_id'));
+      $sexualityfieldid = CRM_sexualityselfidentify_BAO_Sexuality::getCustomFieldId('Demographics', 'Sexuality');
+      $sexualityOptions = civicrm_api3('contact', 'getoptions', array('field' => 'custom_' . $sexualityfieldid));
       $sexualityOptions = $sexualityOptions['values'];
       if (is_numeric($input) && isset($sexualityOptions[$input])) {
         return $input;

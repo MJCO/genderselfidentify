@@ -68,6 +68,19 @@ function sexualityselfidentify_civicrm_enable() {
       'is_active' => 1,
     ));
   }
+
+  $group2 = civicrm_api3('CustomGroup', 'get', array(
+    'name' => 'Demographics',
+  ));
+  if (!empty($group['id'])) {
+    // CustomGroup 'create' is broken for update
+    civicrm_api3('CustomGroup', 'update', array(
+      'id' => $group['id'],
+      'is_reserved' => 1,
+      'is_active' => 1,
+    ));
+  }
+
 }
 
 /**
@@ -94,6 +107,22 @@ function sexualityselfidentify_civicrm_disable() {
       'id' => CRM_sexualityselfidentify_BAO_Sexuality::otherOption('id'),
       'is_reserved' => 0,
     ));
+  }
+  // If custom data doesn't exist, ignore
+  catch (API_Exception $e) {}
+
+  try {
+    $group = civicrm_api3('CustomGroup', 'get', array(
+      'name' => 'Demographics',
+    ));
+    if (!empty($group['id'])) {
+      // CustomGroup 'create' is broken for update
+      civicrm_api3('CustomGroup', 'update', array(
+      'id' => $group['id'],
+      'is_reserved' => 0,
+      'is_active' => 0,
+      ));
+    }
   }
   // If custom data doesn't exist, ignore
   catch (API_Exception $e) {}
@@ -173,13 +202,14 @@ function sexualityselfidentify_civicrm_apiWrappers(&$wrappers, $apiRequest) {
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_buildForm/
  */
 function sexualityselfidentify_civicrm_buildForm($formName, &$form) {
+  $SexualityField = 'custom_' . CRM_sexualityselfidentify_BAO_Sexuality::getCustomFieldId('Demographics', 'Sexuality');
   if (in_array($formName, array('CRM_Contact_Form_Contact', 'CRM_Contact_Form_Inline_Demographics', 'CRM_Profile_Form_Edit'))
-  && $form->elementExists('sexuality_id')) {
-    $form->removeElement('sexuality_id');
-    $form->addElement('text', 'sexuality_id', ts('Sexuality'));
+  && $form->elementExists($sexualityfield)) {
+    $form->removeElement($SexualityField);
+    $form->addElement('text', $SexualityField, ts('Sexuality'));
     if (!empty($form->_contactId)) {
       $form->setDefaults(array(
-        'sexuality_id' => CRM_sexualityselfidentify_BAO_Sexuality::get($form->_contactId),
+        $SexualityField => CRM_sexualityselfidentify_BAO_Sexuality::get($form->_contactId),
       ));
     }
     // Hide custom field from contact edit screen since it is not editable
@@ -197,10 +227,11 @@ function sexualityselfidentify_civicrm_buildForm($formName, &$form) {
  */
 function sexualityselfidentify_civicrm_pre($op, $objectName, $id, &$params) {
   if ($objectName == 'Individual' && in_array($op, array('create', 'edit'))) {
+    $SexualityField = 'custom_' . CRM_sexualityselfidentify_BAO_Sexuality::getCustomFieldId('Demographics', 'Sexuality');
     // $params['version'] indicates this is an api request, which we've already handled with api_v3_sexualityselfidentifyAPIWrapper
-    if (isset($params['sexuality_id']) && empty($params['version'])) {
-      $input = trim($params['sexuality_id']);
-      $params['sexuality_id'] = CRM_sexualityselfidentify_BAO_Sexuality::match($input);
+    if (isset($params[$SexualityField]) && empty($params['version'])) {
+      $input = trim($params[$SexualityField]);
+      $params[$SexualityField] = CRM_sexualityselfidentify_BAO_Sexuality::match($input);
 
       // Can't just set `$params['custom_x'] = $input` because that would be too easy
       // For contact create
@@ -221,7 +252,7 @@ function sexualityselfidentify_civicrm_pre($op, $objectName, $id, &$params) {
  */
 function sexualityselfidentify_civicrm_pageRun(&$page) {
   $pageClass = get_class($page);
-
+  $SexualityField = 'custom_' . CRM_sexualityselfidentify_BAO_Sexuality::getCustomFieldId('Demographics', 'Sexuality');
   // For contact summary view
   if (in_array($pageClass, array('CRM_Contact_Page_View_Summary', 'CRM_Contact_Page_Inline_Demographics'))) {
     $cid = $page->get_template_vars('id');
@@ -238,8 +269,9 @@ function sexualityselfidentify_civicrm_pageRun(&$page) {
     $sexualityRow = NULL;
     $columnHeaders = $page->get_template_vars('columnHeaders');
     if ($columnHeaders) {
+      
       foreach ($columnHeaders as $num => $col) {
-        if (CRM_Utils_Array::value('field_name', $col) === 'sexuality_id') {
+        if (CRM_Utils_Array::value('field_name', $col) === $SexualityField) {
           $sexualityRow = $num;
         }
       }
@@ -267,7 +299,7 @@ function sexualityselfidentify_civicrm_pageRun(&$page) {
     $profileFields = $page->get_template_vars('profileFields');
     $row = $page->get_template_vars('row');
     foreach ($profileFields as $key => &$field) {
-      if ($key == 'sexuality_id') {
+      if ($key == $SexualityField) {
         $row[$field['label']] = $field['value'] = htmlspecialchars(CRM_sexualityselfidentify_BAO_Sexuality::get($page->get_template_vars('cid')));
         $page->assign('row', $row);
         $page->assign('profileFields', $profileFields);
@@ -285,9 +317,10 @@ function sexualityselfidentify_civicrm_pageRun(&$page) {
 function sexualityselfidentify_civicrm_searchColumns($objectName, &$headers, &$rows, &$selector) {
   if (strtolower($objectName) == 'contact') {
     $other = CRM_sexualityselfidentify_BAO_Sexuality::otherOption('label');
+    $SexualityField = 'custom_' . CRM_sexualityselfidentify_BAO_Sexuality::getCustomFieldId('Demographics', 'Sexuality');
     foreach ($rows as &$row) {
-      if (isset($row['sexuality_id']) && $row['sexuality_id'] == $other && !empty($row['contact_id'])) {
-        $row['sexuality_id'] = htmlspecialchars(CRM_sexualityselfidentify_BAO_Sexuality::get($row['contact_id']));
+      if (isset($row[$SexualityField]) && $row[$SexualityField] == $other && !empty($row['contact_id'])) {
+        $row[$SexualityField] = htmlspecialchars(CRM_sexualityselfidentify_BAO_Sexuality::get($row['contact_id']));
       }
     }
   }
